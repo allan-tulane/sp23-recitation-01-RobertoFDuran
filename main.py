@@ -25,6 +25,16 @@ def binary_search(mylist, key):
 	return _binary_search(mylist, key, 0, len(mylist)-1)
 
 def _binary_search(mylist, key, left, right):
+	if right >= left:
+		mid = (right + left) // 2
+		if mylist[mid] == key:
+			return mid
+		elif mylist[mid] > key:
+			return _binary_search(mylist, key, left, mid - 1)
+		else:
+			return _binary_search(mylist, key, mid + 1, right)
+	else:
+		return -1
 	"""
 	Recursive implementation of binary search.
 
@@ -45,12 +55,18 @@ def test_binary_search():
 	assert binary_search([1,2,3,4,5], 5) == 4
 	assert binary_search([1,2,3,4,5], 1) == 0
 	assert binary_search([1,2,3,4,5], 6) == -1
+	assert binary_search([1,2,3,4,5], 2) == 1
+	assert binary_search([1,2,3,4,5], 4) == 3
 	### TODO: add two more tests here.
 
 	###
 
 
 def time_search(search_fn, mylist, key):
+	begin = time.time()*1000
+	search_fn(mylist, key)
+	end = ((time.time()*1000) - begin)
+	return end
 	"""
 	Return the number of milliseconds to run this
 	search function on this list.
@@ -73,6 +89,15 @@ def time_search(search_fn, mylist, key):
 	###
 
 def compare_search(sizes=[1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7]):
+	results = []
+	for i in sizes:
+		mylist = []
+		for j in range(int(i)):
+			mylist.append(j)
+		l = time_search(linear_search, mylist, -1)
+		b = time_search(binary_search, mylist, -1)
+		results.append((i, l, b))
+	return results
 	"""
 	Compare the running time of linear_search and binary_search
 	for input sizes as given. The key for each search should be
